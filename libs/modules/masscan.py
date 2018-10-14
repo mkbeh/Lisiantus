@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 import subprocess
 
-import utils
 
 from bs4 import BeautifulSoup
 
+from libs import utils
 from const import MSG
 
 
 class Masscan(object):
     def __init__(self):
-        self.elapsed = None         # Elapsed time of masscan.
-        self.total = None           # Total found hosts.
+        self.elapsed = None                 # Elapsed time of masscan.
+        self.total = None                   # Total found hosts.
 
     def parse_result_file(self):
         with open('masscan_result') as file:

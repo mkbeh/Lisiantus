@@ -11,8 +11,3 @@ def show_menu(msg=None):
         print(MAIN_LOGO + '\n' + MAIN_MENU.format(msg))
     else:
         print(MAIN_LOGO + '\n' + MAIN_MENU.format(''))
-
-    choice = input()
-    subprocess.run(['clear'])
-
-    return choice

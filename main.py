@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/bin/bash/python3.7
 # -*- coding: utf-8 -*-
 import subprocess
 
-import utils
+from libs import utils
 
-from modules.masscan import Masscan
+from libs.modules.masscan import Masscan
 
 
-class Menu(object):
+class Lisiantus(object):
     def __init__(self):
         self.menu_dict = {
             '1': Masscan,               # Masscan
@@ -38,9 +38,13 @@ class Menu(object):
 
     def run(self):
         subprocess.run(['clear'])
-        choice = utils.show_menu()
-        self.menu_dict[choice]().run()
+        utils.show_menu()
+
+        while True:
+            choice = input()
+            subprocess.run(['clear'])
+            self.menu_dict[choice]().run()
 
 
 if __name__ == '__main__':
-    Menu().run()
+    Lisiantus().run()
