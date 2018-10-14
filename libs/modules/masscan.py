@@ -14,22 +14,25 @@ class Masscan(object):
         self.total = None                   # Total found hosts.
 
     def parse_result_file(self):
+        # Read bs object from file.
         with open('masscan_result') as file:
             bs_obj = BeautifulSoup(file, 'lxml-xml')
 
-            self.elapsed = bs_obj.find('finished')['elapsed']
-            self.total = bs_obj.find('hosts')['total']
-            hosts = bs_obj.findAll('host')
+        self.elapsed = bs_obj.find('finished')['elapsed']
+        self.total = bs_obj.find('hosts')['total']
+        hosts = bs_obj.findAll('host')
 
-            with open('masscan_hosts', 'a') as res_file:
-                for host in hosts:
-                    ip = host.find('address')['addr']
-                    port = host.find('port')['portid']
-                    template = '{}:{}\n'.format(ip, port)
-                    res_file.writelines(template)
+        # Write found data (host:port) in file.
+        for host in hosts:
+            ip = host.find('address')['addr']
+            port = host.find('port')['portid']
+            template = f'{ip}\n'
+
+            with open('masscan_hosts_' + port, 'a') as res_file:
+                res_file.writelines(template)
 
     def masscan(self, ip, port):
-        command = ['masscan', '-p', '{}'.format(port), '{}'.format(ip), '-oX', 'masscan_result', '--max-rate', '700']
+        command = ['masscan', '-p', f'{port}', f'{ip}', '-oX', 'masscan_result', '--max-rate', '700']
         subprocess.run(command, stdout=subprocess.PIPE, encoding='utf-8')
 
         self.parse_result_file()
