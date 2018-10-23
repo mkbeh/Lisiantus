@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
-import subprocess
+import sys
+import os
 
-from const import MAIN_MENU, MAIN_LOGO
+
+from datetime import datetime
 
 
-def show_menu(msg=None):
-    subprocess.run(['clear'])
+def date_today():
+    return datetime.today().strftime('%d-%m-%Y').zfill(2)
 
-    if msg:
-        print(MAIN_LOGO + '\n' + MAIN_MENU.format(msg))
-    else:
-        print(MAIN_LOGO + '\n' + MAIN_MENU.format(''))
+
+def get_path_to_dir(dir_name):
+    directory = os.path.join(os.path.dirname(sys.argv[0]) + 'results', dir_name)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    return directory
