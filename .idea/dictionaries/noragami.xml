@@ -4,10 +4,16 @@
       <w>addr</w>
       <w>bruteforce</w>
       <w>ddos</w>
+      <w>fgrep</w>
       <w>lisiantus</w>
       <w>lxml</w>
       <w>masscan</w>
+      <w>mesg</w>
+      <w>mesgs</w>
+      <w>patator</w>
       <w>portid</w>
+      <w>userpass</w>
+      <w>wordlists</w>
     </words>
   </dictionary>
 </component>

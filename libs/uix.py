@@ -25,9 +25,25 @@ def masscan_start_msg():
     return ip, port
 
 
-def bruteforce_start_msg():
+def bruteforce_start_msg(files_names):
+    print('Available list of files for bruteforce.')
+
+    for i in range(len(files_names)):
+        print(f'{i}. {files_names[i]}', '\n')
+
     print('Choose file with hosts from current list. (enter num)')
     choice = input('> ')
     subprocess.run(['clear'])
 
     return choice
+
+
+def bruteforce_result_msg(start, stop, hosts_am):
+    msg = """
+Result of bruteforce:
+Hacked hosts: {}
+Start: {}
+Stop: {} 
+    """.format(hosts_am, start, stop)
+
+    return msg
