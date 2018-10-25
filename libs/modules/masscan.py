@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 
 from libs import utils
 from libs import uix
-from const import MSG
 
 
 class Masscan(object):
@@ -52,7 +51,7 @@ class Masscan(object):
         subprocess.run(command, stdout=subprocess.PIPE, encoding='utf-8')
 
         self.parse_result_file()
-        uix.show_menu(msg=MSG.format('masscan', self.total, self.elapsed))
+        uix.show_menu(msg=uix.MSG.format('masscan', self.total, self.elapsed))
 
     def run(self):
         """

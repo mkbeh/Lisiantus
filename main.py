@@ -6,6 +6,7 @@ from libs import uix
 
 from libs.modules.masscan import Masscan
 from libs.modules.bruteforce import Bruteforce
+from libs.modules.sendcommand import SendCommand
 
 
 class Lisiantus(object):
@@ -13,23 +14,8 @@ class Lisiantus(object):
         self.menu_dict = {
             '1': Masscan,               # Masscan
             '2': Bruteforce,            # Bruteforce
-            '3': self.check_alive,      # Check alive servers
-            '4': self.upload_data,      # Upload data to client
-            '5': self.send_command,     # Send command
-            '6': self.ddos              # DDos target (Experimental)
+            '3': SendCommand,           # Contains: set custom command, upload/download file, ddos.
         }
-
-    def check_alive(self):
-        pass
-
-    def upload_data(self):
-        pass
-
-    def send_command(self):
-        pass
-
-    def ddos(self):
-        pass
 
     def run(self):
         subprocess.run(['clear'])
