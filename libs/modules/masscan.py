@@ -19,6 +19,7 @@ class Masscan(object):
         Parse masscan result file and create new file with specific name which contains only ip/s.
         :return:
         """
+        date_today = utils.date_today()
 
         # Read bs object from file.
         with open(self.directory + '/masscan_result') as file:
@@ -29,8 +30,6 @@ class Masscan(object):
         hosts = bs_obj.findAll('host')
 
         # Write found data (host:port) in file.
-        date_today = utils.date_today()
-
         for host in hosts:
             ip = host.find('address')['addr']
             port = host.find('port')['portid']

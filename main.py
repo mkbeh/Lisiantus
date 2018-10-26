@@ -12,9 +12,9 @@ from libs.modules.sendcommand import SendCommand
 class Lisiantus(object):
     def __init__(self):
         self.menu_dict = {
-            '1': Masscan,               # Masscan
-            '2': Bruteforce,            # Bruteforce
-            '3': SendCommand,           # Contains: set custom command, upload/download file, ddos.
+            '0': Masscan,               # Masscan
+            '1': Bruteforce,            # Bruteforce
+            '2': SendCommand,           # Contains: set custom command, upload/download file, ddos.
         }
 
     def run(self):

@@ -23,9 +23,9 @@ $$$$$$$  |\$$$$$$  | \$$$$  |$$ |  $$ |\$$$$$$$\  \$$$$  |
 
 
 MAIN_MENU = """
-1. Masscan              (Scan one or diapasons of ip's by specific port/s)
-2. Bruteforce           (Bruteforce server/s by ip/s)
-3. Send Command         (Send command to remote server. Available cmds: send custom cmd, upload/download file, ddos)
+0. Masscan              (Scan one or diapasons of ip's by specific port/s)
+1. Bruteforce           (Bruteforce server/s by ip/s)
+2. Send Command         (Send command to remote server. Available cmds: send custom cmd, upload/download file, ddos)
 
 {}
 
@@ -85,13 +85,30 @@ Stop: {}
 
 def send_command_start_msg():
     msg = """Available commands:
-1. Send custom command.
-2. Download file from server.
-3. Upload file to server.
-4. DDos.  (experimental module)     
+0. Send custom command to remote servers.
+1. Upload payload to remote servers.
+2. Download file from remote servers.
+3. Upload file to remote servers.
+4. Run DDos.  (experimental module)     
 """
     print(msg)
     choice = input('> ')
     subprocess.run(['clear'])
 
     return choice
+
+
+def send_command_custom_cmd(dirs_lst):
+    print('Available directories with files of hacked hosts:')
+
+    for i in range(len(dirs_lst)):
+        print(f'{i}. {dirs_lst[i]}', '\n')
+
+    print('Choose directory:')
+    choice = input('> ')
+    print('Input your command:')
+    cmd = input('> ')
+    subprocess.run(['clear'])
+
+    return choice, cmd
+

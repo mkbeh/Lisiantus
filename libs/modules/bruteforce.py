@@ -28,6 +28,9 @@ class Bruteforce(object):
         start_time = bs_obj.find('start')['utc']
         stop_time = bs_obj.find('stop')['utc']
 
+        # Get today date.
+        date = utils.date_today()
+
         # Write filtered data in new file.
         for i in range(hosts_num):
             host = candidates[i].text
@@ -35,7 +38,7 @@ class Bruteforce(object):
 
             pattern = f'{host}:{mesg}'.replace('"', '')
 
-            with open(self.result_dir + '/filtered_result', 'a') as file:
+            with open(self.result_dir + f'/filtered_result_{date}', 'a') as file:
                 file.writelines(pattern)
 
         return uix.bruteforce_result_msg(start_time, stop_time, hosts_num)

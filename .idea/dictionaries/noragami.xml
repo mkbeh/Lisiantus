@@ -2,10 +2,12 @@
   <dictionary name="noragami">
     <words>
       <w>addr</w>
+      <w>asctime</w>
       <w>bruteforce</w>
       <w>cmds</w>
       <w>ddos</w>
       <w>fgrep</w>
+      <w>levelname</w>
       <w>lisiantus</w>
       <w>lxml</w>
       <w>masscan</w>
@@ -14,6 +16,8 @@
       <w>paramiko</w>
       <w>patator</w>
       <w>portid</w>
+      <w>splitted</w>
+      <w>stdin</w>
       <w>userpass</w>
       <w>wordlists</w>
     </words>
