@@ -59,13 +59,13 @@ class SendCommand(object):
         self.cmd = None
         self.log = 'N'
 
-    @decorators.ssh_output
+    @decorators.ssh_send_cmd_out
     def exec_custom_cmd(self, seq, cmd, log='N'):
         for el in list(seq):
             with SSH(**el) as ssh:
                 output = ssh.exec_cmd(cmd)
 
-            file = self.sendcmd_dir + '/exec_custom_cmd.log'
+            file = self.sendcmd_dir + '/exec_custom_cmd.json'
 
             return output, file, cmd, el['hostname'], log.lower()
 

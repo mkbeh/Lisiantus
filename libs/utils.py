@@ -97,7 +97,13 @@ def split_on_ranges(num, num_ranges, btt_specified=1):
         ranges_lst.append((c - a + e, c))
 
         if i == num_ranges - 1 and last_range != 0:
-            ranges_lst.append(values_comparison(c + btt_specified, c + last_range * btt_specified))
+            t = values_comparison(c + btt_specified, c + last_range * btt_specified)
+
+            if t[-1] > num:
+                ranges_lst.append((t[0],))
+
+            else:
+                ranges_lst.append(t)
 
         else:
             c += a
