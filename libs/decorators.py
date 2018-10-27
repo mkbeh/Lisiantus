@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import json
 
 from libs import utils
 
@@ -9,8 +9,14 @@ def ssh_output(func):
         val, log_file_name, cmd, host, log = func(*args, **kwargs)
 
         if log == 'y':
-            logging.basicConfig(filename=log_file_name.format(utils.date_today()), level=logging.INFO,
-                                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            logging.info(f'Host: {host}. Output of command {cmd}:\n{val}.')
+            data = {
+                'date': utils.date_today(),
+                'host': host,
+                'cmd': cmd,
+                'output': val,
+            }
+
+            with open(log_file_name, 'a') as f:
+                f.write(json.dumps(data))
 
     return wrapper
