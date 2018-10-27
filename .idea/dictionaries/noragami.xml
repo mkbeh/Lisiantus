@@ -16,6 +16,8 @@
       <w>paramiko</w>
       <w>patator</w>
       <w>portid</w>
+      <w>sendcmd</w>
+      <w>sendcommand</w>
       <w>splitted</w>
       <w>stdin</w>
       <w>userpass</w>

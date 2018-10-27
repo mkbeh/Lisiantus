@@ -108,7 +108,9 @@ def send_command_custom_cmd(dirs_lst):
     choice = input('> ')
     print('Input your command:')
     cmd = input('> ')
+    print('Is response logging required? Y/n')
+    log = input('> ')
     subprocess.run(['clear'])
 
-    return choice, cmd
+    return choice, cmd, log
 
