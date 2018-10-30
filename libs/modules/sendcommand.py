@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import threading
+
 import paramiko
 
 from libs import uix
@@ -69,19 +71,30 @@ class SendCommand(object):
 
             return output, file, cmd, el['hostname'], log.lower()
 
+    def exec_custom_cmd_by_range(self, file, range_, cmd_name, log):
+        self.exec_custom_cmd(utils.create_dict_data(utils.read_file_from_specific_line(file, range_)), cmd_name, log)
+
     def send_custom_command(self):
         choice, cmd, log = uix.send_command_custom_cmd(self.hosts_dirs)
         file = utils.get_file_from_dir(self.brute_dir, self.hosts_dirs, choice, 'filtered_result')
-        lines_count = utils.count_lines(file)
-        ranges = utils.split_on_ranges(lines_count, 10) if lines_count > 100 else None
+        lines_amount = utils.count_lines(file)
 
-        if ranges:
-            # Exec cmd on threads by ranges.
-            pass
+        # Exec cmd reading file by blocks.
+        block_size = 100
+        num_threads = 10
+        begin = 0
+        end = begin + block_size if lines_amount < block_size else lines_amount
+        ranges = utils.split_on_ranges_by_step(begin, end, num_threads)
 
-        else:
-            # Exec custom command for each host in file.
-            self.exec_custom_cmd(utils.create_dict_data(utils.read_file(file)), cmd, log)
+        while lines_amount != 0:
+            for range_ in ranges:
+                threading.Thread(target=self.exec_custom_cmd_by_range,
+                                 args=(file, range_, cmd, log)).start()
+
+            begin += block_size
+            end = begin + block_size
+            lines_amount -= block_size if lines_amount > block_size else lines_amount
+            ranges = ranges if lines_amount > block_size else utils.split_on_ranges_by_step(begin, end, num_threads)
 
     def upload_payload(self):
         pass

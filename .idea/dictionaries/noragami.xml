@@ -7,6 +7,7 @@
       <w>cmds</w>
       <w>ddos</w>
       <w>fgrep</w>
+      <w>iters</w>
       <w>levelname</w>
       <w>lisiantus</w>
       <w>lxml</w>
@@ -21,6 +22,7 @@
       <w>splitted</w>
       <w>stdin</w>
       <w>userpass</w>
+      <w>vals</w>
       <w>wordlists</w>
     </words>
   </dictionary>
