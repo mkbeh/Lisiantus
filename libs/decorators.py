@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import logging
 
 from libs import utils
 
@@ -11,17 +12,20 @@ def ssh_send_cmd_out(func):
     :return:
     """
     def wrapper(*args, **kwargs):
-        val, log_file_name, cmd, host, log = func(*args, **kwargs)
+        lst = list(func(*args, **kwargs))
 
-        if log == 'y':
-            data = {
-                'date': utils.date_today(),
-                'host': host,
-                'cmd': cmd,
-                'output': val,
-            }
+        for el in lst:
+            val, log_file_name, cmd, host, log = el
 
-            with open(log_file_name, 'a') as f:
-                f.write(json.dumps(data))
+            if log == 'y':
+                data = {
+                    'date': utils.date_today(),
+                    'host': host,
+                    'cmd': cmd,
+                    'output': val,
+                }
+
+                logging.basicConfig(filename=log_file_name, format='', level=logging.INFO)
+                logging.info(json.dumps(data))
 
     return wrapper

@@ -3,6 +3,8 @@ import threading
 
 import paramiko
 
+from paramiko.ssh_exception import NoValidConnectionsError
+
 from libs import uix
 from libs import utils
 from libs import decorators
@@ -13,6 +15,7 @@ class SSH(object):
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         self.kwargs = kwargs
+        self.error = None
 
     def __enter__(self):
         kw = self.kwargs
@@ -20,9 +23,8 @@ class SSH(object):
         try:
             self.client.connect(hostname=kw.get('hostname'), username=kw.get('username'),
                                 password=kw.get('password'), port=kw.get('port', '22'))
-        except Exception as e:
-            # Required set logging here.
-            print('Error while connecting to the server.', e)
+        except NoValidConnectionsError as e:
+            self.error = str(e)
 
         return self
 
@@ -30,7 +32,11 @@ class SSH(object):
         self.client.close()
 
     def exec_cmd(self, cmd):
-        _, stdout, _ = self.client.exec_command(cmd)
+        try:
+            _, stdout, _ = self.client.exec_command(cmd)
+        except AttributeError:
+            return self.error
+
         data = stdout.read().decode()
 
         return data
@@ -69,10 +75,10 @@ class SendCommand(object):
 
             file = self.sendcmd_dir + '/exec_custom_cmd.json'
 
-            return output, file, cmd, el['hostname'], log.lower()
+            yield output, file, cmd, el['hostname'], log.lower()
 
-    def exec_custom_cmd_by_range(self, file, range_, cmd_name, log):
-        self.exec_custom_cmd(utils.create_dict_data(utils.read_file_from_specific_line(file, range_)), cmd_name, log)
+    def exec_custom_cmd_by_range(self, file, range_, cmd_name, log, lock):
+        self.exec_custom_cmd(utils.create_dict_data(utils.read_file_from_specific_line(file, range_, lock)), cmd_name, log)
 
     def send_custom_command(self):
         choice, cmd, log = uix.send_command_custom_cmd(self.hosts_dirs)
@@ -87,9 +93,14 @@ class SendCommand(object):
         ranges = utils.split_on_ranges_by_step(begin, end, num_threads)
 
         while lines_amount != 0:
+            threads = []
+            lock = threading.Lock()
+
             for range_ in ranges:
-                threading.Thread(target=self.exec_custom_cmd_by_range,
-                                 args=(file, range_, cmd, log)).start()
+                threads.append(threading.Thread(target=self.exec_custom_cmd_by_range,
+                                                args=(file, range_, cmd, log, lock)))
+            [t.start() for t in threads]
+            [t.join() for t in threads]
 
             begin += block_size
             end = begin + block_size
@@ -109,6 +120,9 @@ class SendCommand(object):
         pass
 
     def run(self):
+        import time
+        start_time = time.time()
         choice = uix.send_command_start_msg()
         self.sub_menu[choice]()
+        print("--- %s seconds ---" % (time.time() - start_time))
 

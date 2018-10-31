@@ -162,17 +162,19 @@ def read_file(file):
             yield line
 
 
-def read_file_from_specific_line(file, range_):
+def read_file_from_specific_line(file, range_, lock):
     """
     Read file from specific line.
     :param file:
     :param range_:
+    :param lock:
     :return:
     """
     begin = range_[0] if range_[0] != 0 else 1
 
-    for line_num in range(begin, range_[1]):
-        yield linecache.getline(file, line_num)
+    with lock:
+        for line_num in range(begin, range_[1] + 1):
+            yield linecache.getline(file, line_num)
 
 
 def create_dict_data(seq):
@@ -186,19 +188,9 @@ def create_dict_data(seq):
         yield {'hostname': splitted_el[0], 'username': splitted_el[1], 'password': splitted_el[2]}
 
 
-def get_slice(seq, start):
-    """
-    Func which get sequence and return slice from 5 element.
-    :param seq:
-    :param start
-    :return:
-    """
-    return seq[start:]
-
-
 def check_on_not_eq_vals(val1, val2):
     """
-    Func which check values on non equivalent.
+    Func which check values on non equivalent and return tuple of vals.
     :param val1:
     :param val2:
     :return:
@@ -216,7 +208,7 @@ def check_difference_on_lt(val1, val2):
     """
     difference = val2 - val1
 
-    if difference < 20:     # < 20 is nums on which func split on rages return incorrect ranges.
+    if difference < 20:     # < 20 are nums on which func split on rages return incorrect ranges.
         return val1, val2
 
 
