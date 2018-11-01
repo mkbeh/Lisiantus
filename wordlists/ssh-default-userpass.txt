@@ -118,4 +118,9 @@ root:dasdec1
 root:7ujMko0admin
 root:7ujMko0vizxv
 root:Zte521
-root:zlxx.
+root:zlxx
+sucr:1234567890
+sucre:sucre
+sucrecoin:sucrecoin
+sucrecore:sucrecore
+sucr:sucr

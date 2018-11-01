@@ -78,7 +78,8 @@ class SendCommand(object):
             yield output, file, cmd, el['hostname'], log.lower()
 
     def exec_custom_cmd_by_range(self, file, range_, cmd_name, log, lock):
-        self.exec_custom_cmd(utils.create_dict_data(utils.read_file_from_specific_line(file, range_, lock)), cmd_name, log)
+        self.exec_custom_cmd(utils.create_dict_data(utils.read_file_from_specific_line(file, range_, lock)),
+                             cmd_name, log)
 
     def send_custom_command(self):
         choice, cmd, log = uix.send_command_custom_cmd(self.hosts_dirs)

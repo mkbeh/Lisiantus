@@ -49,7 +49,7 @@ def show_menu(msg=None):
 
 
 def masscan_start_msg():
-    print('Input ip or diapason (ex. 192.168.1.1 or 192.168.1.0/24)')
+    print('Input ip or path to file with hosts:')
     ip = input('> ')
 
     print('Input port/s (ex. 80 or 80,8080,22)')

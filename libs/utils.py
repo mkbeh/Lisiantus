@@ -241,3 +241,23 @@ def split_on_ranges_by_step(begin, end, num_ranges):
                 lst.append(check_on_not_eq_vals(i + step + 1, i + step + last_val))
 
     return lst
+
+
+def check_on_file(val):
+    """
+    Func which check val on ip or exist file.
+    :param val:
+    :return:
+    """
+    pattern = re.compile(r'\d+\.\d+\.\d+\.\d+')
+
+    try:
+        re.match(pattern, val).group()
+        return
+    except AttributeError:
+        bool_ = os.path.isfile(val)
+
+        if bool_ is False:
+            raise Exception(f'{val} does\'nt exist.')
+
+        return bool_

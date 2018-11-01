@@ -40,15 +40,18 @@ class Masscan(object):
 
     def masscan(self, ip, port):
         """
-        Method which run mass scanning py ip and port , then parse masscan result file and create new with file
-        with specific name.
+        Method which run mass scanning py ip or file with hosts and port , then parse masscan result file and create
+        new with file with specific name.
         :param ip:
         :param port:
         :return:
         """
         command = ['masscan', '-p', f'{port}', f'{ip}', '-oX', self.directory + '/masscan_result', '--max-rate', '700']
-        subprocess.run(command, stdout=subprocess.PIPE, encoding='utf-8')
 
+        if utils.check_on_file(ip) is True:
+            command.insert(3, '-iL')
+
+        subprocess.run(command, stdout=subprocess.PIPE, encoding='utf-8')
         self.parse_result_file()
         uix.show_menu(msg=uix.MSG.format('masscan', self.total, self.elapsed))
 
