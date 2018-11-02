@@ -38,17 +38,18 @@ class Masscan(object):
             with open(self.directory + '/masscan_hosts_' + port + f'_{date_today}', 'a') as res_file:
                 res_file.writelines(template)
 
-    def masscan(self, ip, port):
+    def masscan(self, host, port):
         """
         Method which run mass scanning py ip or file with hosts and port , then parse masscan result file and create
         new with file with specific name.
-        :param ip:
+        :param host: can be ip or diapason or path to file with hosts.
         :param port:
         :return:
         """
-        command = ['masscan', '-p', f'{port}', f'{ip}', '-oX', self.directory + '/masscan_result', '--max-rate', '700']
+        command = ['masscan', '-p', f'{port}', f'{host}', '-oX', self.directory + '/masscan_result',
+                   '--max-rate', '700']
 
-        if utils.check_on_file(ip) is True:
+        if utils.check_on_file(host) is True:
             command.insert(3, '-iL')
 
         subprocess.run(command, stdout=subprocess.PIPE, encoding='utf-8')
@@ -60,5 +61,5 @@ class Masscan(object):
         Method which run masscan module.
         :return:
         """
-        ip, port = uix.masscan_start_msg()
-        self.masscan(ip, port)
+        host, port = uix.masscan_start_msg()
+        self.masscan(host, port)

