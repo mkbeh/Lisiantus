@@ -15,14 +15,17 @@
       <w>mesg</w>
       <w>mesgs</w>
       <w>paramiko</w>
+      <w>passwds</w>
       <w>patator</w>
       <w>portid</w>
       <w>sendcmd</w>
       <w>sendcommand</w>
       <w>splitted</w>
       <w>stdin</w>
+      <w>usernames</w>
       <w>userpass</w>
       <w>vals</w>
+      <w>wordlist</w>
       <w>wordlists</w>
     </words>
   </dictionary>
