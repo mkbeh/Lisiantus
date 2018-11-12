@@ -2,6 +2,7 @@
 
 
 # TODO: remove all code associated with patator utility and write own bruteforce utility by ssh.
+# TODO: add using high passwords list from archive.
 
 
 import subprocess
